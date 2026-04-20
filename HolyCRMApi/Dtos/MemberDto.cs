@@ -1,3 +1,5 @@
+using HolyCRMApi.Enums;
+
 namespace HolyCRMApi.Dtos;
 
 /// <summary>
@@ -29,4 +31,9 @@ public class MemberDto
     /// Date of birth of the member, if known.
     /// </summary>
     public string? DateOfBirth { get; set; }
+
+    /// <summary>
+    /// Gender of the member.
+    /// </summary>
+    public Gender Gender { get; set; }
 }

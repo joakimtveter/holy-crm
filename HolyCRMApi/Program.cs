@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using HolyCRMApi.Data;
 using HolyCRMApi.Services;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,9 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
     .ReadFrom.Services(services)
     .Enrich.FromLogContext());
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(o =>
+        o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.AddOpenApi();
 

@@ -26,7 +26,11 @@ public class MembersController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IReadOnlyList<MemberDto>>> GetMembers([FromQuery] GetMembersQuery query)
     {
+        logger.LogDebug("Fetching members on Page={Page} with PageSize={PageSize}", query.Page, query.PageSize);
+
         var members = await memberService.GetAllAsync(query.Page, query.PageSize);
+
+        logger.LogDebug("Returned {Count} members", members.Count);
 
         return Ok(members);
     }
@@ -42,13 +46,19 @@ public class MembersController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<MemberDto>> GetMemberById([FromRoute] Guid memberId)
     {
+        logger.LogDebug("Fetching member MemberId={MemberId}", memberId);
+
         var member = await memberService.GetByIdAsync(memberId);
-        
-        if (member is null) return  NotFound();
-        
+
+        if (member is null)
+        {
+            logger.LogWarning("Member not found MemberId={MemberId}", memberId);
+            return NotFound();
+        }
+
         return Ok(member);
     }
-    
+
     /// <summary>
     /// Create a new member
     /// </summary>
@@ -59,7 +69,11 @@ public class MembersController(
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<MemberDto>> CreateMember([FromBody]CreateMemberRequest request)
     {
+        logger.LogDebug("Creating member");
+
         var createdMember = await memberService.CreateAsync(request);
+
+        logger.LogInformation("Member created MemberId={MemberId}", createdMember.Id);
 
         return CreatedAtAction(
             nameof(GetMemberById),
@@ -83,8 +97,18 @@ public class MembersController(
         [FromBody] UpdateMemberRequest request
         )
     {
+        logger.LogDebug("Updating member MemberId={MemberId}", memberId);
+
         var updatedMember = await memberService.UpdateAsync(memberId, request);
-        if (updatedMember == null) return NotFound();
+
+        if (updatedMember == null)
+        {
+            logger.LogWarning("Member not found MemberId={MemberId}", memberId);
+            return NotFound();
+        }
+
+        logger.LogInformation("Member updated MemberId={MemberId}", memberId);
+
         return Ok(updatedMember);
     }
 
@@ -99,8 +123,18 @@ public class MembersController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> DeleteMember([FromRoute] Guid memberId)
     {
-        var member = await memberService.DeleteAsync(memberId);
-        if  (!member) return NotFound();
+        logger.LogDebug("Deleting member MemberId={MemberId}", memberId);
+
+        var deleted = await memberService.DeleteAsync(memberId);
+
+        if (!deleted)
+        {
+            logger.LogWarning("Member not found MemberId={MemberId}", memberId);
+            return NotFound();
+        }
+
+        logger.LogInformation("Member deleted MemberId={MemberId}", memberId);
+
         return NoContent();
     }
 }
