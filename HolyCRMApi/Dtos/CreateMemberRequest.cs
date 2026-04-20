@@ -1,14 +1,14 @@
 namespace HolyCRMApi.Dtos;
 
-public class MemberDto
+public class CreateMemberRequest
 {
-    public Guid Id { get; set; }
-    
     public string FirstName { get; set; } = string.Empty;
     
     public string? MiddleNames { get; set; }
     
     public string LastName { get; set; } = string.Empty;
     
-    public string? DateOfBirth { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
+    
+    
 }

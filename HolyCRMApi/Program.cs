@@ -1,4 +1,5 @@
 using HolyCRMApi.Data;
+using HolyCRMApi.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -13,8 +14,10 @@ builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();
 
-builder.Services.AddDbContext<MemberDbContext>(options => options.UseSqlServer(
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<MemberService>();
 
 var app = builder.Build();
 
