@@ -9,7 +9,7 @@ namespace HolyCRMApi.Services;
 /// Handles data access and business logic for members.
 /// </summary>
 /// <param name="db"></param>
-public class MemberService(AppDbContext db)
+public class MemberService(AppDbContext db, ILogger<MemberService> logger)
 {
     /// <summary>
     /// Returns a paginated list of all members ordered by last name then first name.
@@ -19,6 +19,8 @@ public class MemberService(AppDbContext db)
     /// <returns>List of members for the requested page.</returns>
     public async Task<List<MemberDto>> GetAllAsync(int page, int pageSize)
     {
+        logger.LogDebug("Querying members Page={Page} PageSize={PageSize}", page, pageSize);
+
         return await db.Members
             .AsNoTracking()
             .OrderBy(m => m.LastName)
@@ -44,6 +46,8 @@ public class MemberService(AppDbContext db)
     /// <returns>The member, or null.</returns>
     public async Task<MemberDto?> GetByIdAsync(Guid memberId)
     {
+        logger.LogDebug("Querying member MemberId={MemberId}", memberId);
+
         return await db.Members
             .AsNoTracking()
             .Where(m => m.MemberId == memberId)
@@ -67,9 +71,15 @@ public class MemberService(AppDbContext db)
     /// <returns>The updated member, or null.</returns>
     public async Task<MemberDto?> UpdateAsync(Guid id, UpdateMemberRequest request)
     {
+        logger.LogDebug("Updating member MemberId={MemberId}", id);
+
         var member = await db.Members.FindAsync(id);
 
-        if (member is null) return null;
+        if (member is null)
+        {
+            logger.LogWarning("Update failed — member not found MemberId={MemberId}", id);
+            return null;
+        }
 
         member.FirstName = request.FirstName.Trim();
         member.MiddleNames = request.MiddleNames?.Trim();
@@ -97,6 +107,8 @@ public class MemberService(AppDbContext db)
     /// <returns>The newly created member.</returns>
     public async Task<MemberDto> CreateAsync(CreateMemberRequest request)
     {
+        logger.LogDebug("Creating member");
+
         var member = new Member
         {
             FirstName = request.FirstName.Trim(),
@@ -127,9 +139,15 @@ public class MemberService(AppDbContext db)
     /// <returns>True if the member was deleted, false if not found.</returns>
     public async Task<bool> DeleteAsync(Guid memberId)
     {
+        logger.LogDebug("Deleting member MemberId={MemberId}", memberId);
+
         var member = await db.Members.FindAsync(memberId);
 
-        if (member == null) return false;
+        if (member == null)
+        {
+            logger.LogWarning("Delete failed — member not found MemberId={MemberId}", memberId);
+            return false;
+        }
         
         db.Members.Remove(member);
         await db.SaveChangesAsync();
