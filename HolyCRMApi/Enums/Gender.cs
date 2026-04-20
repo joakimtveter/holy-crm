@@ -1,8 +1,11 @@
+using System.Text.Json.Serialization;
+
 namespace HolyCRMApi.Enums;
 
 /// <summary>
 /// Gender of a member
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum Gender
 {
     /// <summary>
