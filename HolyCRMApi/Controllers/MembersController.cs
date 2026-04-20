@@ -9,6 +9,8 @@ namespace HolyCRMApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[Produces("application/json")]
+[Consumes("application/json")]
 public class MembersController(
     MemberService memberService,
     ILogger<MembersController> logger
