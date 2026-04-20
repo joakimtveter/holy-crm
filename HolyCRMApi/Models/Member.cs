@@ -43,4 +43,14 @@ public class Member
     /// </summary>
     public Gender Gender {get; set;}
 
+    /// <summary>
+    /// UTC timestamp when the member was created.
+    /// </summary>
+    public DateTimeOffset CreatedAt { get; set; }
+
+    /// <summary>
+    /// UTC timestamp when the member was last updated.
+    /// </summary>
+    public DateTimeOffset UpdatedAt { get; set; }
+
 }

@@ -30,10 +30,20 @@ public class MemberDto
     /// <summary>
     /// Date of birth of the member, if known.
     /// </summary>
-    public string? DateOfBirth { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
 
     /// <summary>
     /// Gender of the member.
     /// </summary>
     public Gender Gender { get; set; }
+
+    /// <summary>
+    /// UTC timestamp when the member was created.
+    /// </summary>
+    public DateTimeOffset CreatedAt { get; set; }
+
+    /// <summary>
+    /// UTC timestamp when the member was last updated.
+    /// </summary>
+    public DateTimeOffset UpdatedAt { get; set; }
 }

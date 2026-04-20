@@ -33,8 +33,10 @@ public class MemberService(AppDbContext db, ILogger<MemberService> logger)
                 FirstName = m.FirstName,
                 MiddleNames = m.MiddleNames,
                 LastName  = m.LastName,
-                DateOfBirth = m.DateOfBirth.ToString(),
+                DateOfBirth = m.DateOfBirth,
                 Gender = m.Gender,
+                CreatedAt = m.CreatedAt,
+                UpdatedAt = m.UpdatedAt,
             })
             .ToListAsync();
     }  
@@ -57,8 +59,10 @@ public class MemberService(AppDbContext db, ILogger<MemberService> logger)
                 FirstName = m.FirstName,
                 MiddleNames = m.MiddleNames,
                 LastName  = m.LastName,
-                DateOfBirth = m.DateOfBirth.ToString(),
+                DateOfBirth = m.DateOfBirth,
                 Gender = m.Gender,
+                CreatedAt = m.CreatedAt,
+                UpdatedAt = m.UpdatedAt,
             })
             .FirstOrDefaultAsync();
     }
@@ -86,6 +90,7 @@ public class MemberService(AppDbContext db, ILogger<MemberService> logger)
         member.LastName = request.LastName.Trim();
         member.DateOfBirth = request.DateOfBirth;
         member.Gender = request.Gender;
+        member.UpdatedAt = DateTimeOffset.UtcNow;
 
         await db.SaveChangesAsync();
 
@@ -95,8 +100,10 @@ public class MemberService(AppDbContext db, ILogger<MemberService> logger)
             FirstName = member.FirstName,
             MiddleNames = member.MiddleNames,
             LastName = member.LastName,
-            DateOfBirth = member.DateOfBirth.ToString(),
+            DateOfBirth = member.DateOfBirth,
             Gender = member.Gender,
+            CreatedAt = member.CreatedAt,
+            UpdatedAt = member.UpdatedAt,
         };
     }
     
@@ -109,6 +116,7 @@ public class MemberService(AppDbContext db, ILogger<MemberService> logger)
     {
         logger.LogDebug("Creating member");
 
+        var now = DateTimeOffset.UtcNow;
         var member = new Member
         {
             FirstName = request.FirstName.Trim(),
@@ -116,6 +124,8 @@ public class MemberService(AppDbContext db, ILogger<MemberService> logger)
             LastName = request.LastName.Trim(),
             DateOfBirth = request.DateOfBirth,
             Gender = request.Gender,
+            CreatedAt = now,
+            UpdatedAt = now,
         };
 
         db.Members.Add(member);
@@ -127,8 +137,10 @@ public class MemberService(AppDbContext db, ILogger<MemberService> logger)
             FirstName = member.FirstName,
             MiddleNames = member.MiddleNames,
             LastName = member.LastName,
-            DateOfBirth = member.DateOfBirth.ToString(),
+            DateOfBirth = member.DateOfBirth,
             Gender = member.Gender,
+            CreatedAt = member.CreatedAt,
+            UpdatedAt = member.UpdatedAt,
         };
     }
     
