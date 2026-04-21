@@ -6,8 +6,8 @@ import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/reac
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import type { ReactNode } from "react";
 
-import Footer from "#/shared/components/Footer";
-import Header from "#/shared/components/Header";
+import SiteFooter from "#/shared/components/site-footer.tsx";
+import SiteHeader from "#/shared/components/site-header.tsx";
 
 import { queryClient } from "../router";
 
@@ -48,9 +48,9 @@ function RootDocument({ children }: { children: ReactNode }) {
       </head>
       <body className="font-sans wrap-anywhere antialiased selection:bg-[rgba(79,184,178,0.24)]">
         <QueryClientProvider client={queryClient}>
-          <Header />
+          <SiteHeader />
           {children}
-          <Footer />
+          <SiteFooter />
           <TanStackDevtools
             config={{
               position: "bottom-right",

@@ -6,8 +6,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import type { MemberBrief } from "#/domains/members/member.type.ts";
-import { useMembers } from "#/domains/members/useMembers.ts";
+import type { MemberBrief } from "#/domains/members/member.types.ts";
+import { useMembers } from "#/domains/members/use-members.ts";
 import {
   Table,
   TableBody,
@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "#/shared/components/ui/table";
+import { formatDate } from "#/shared/lib/datetime.ts";
 
 export const Route = createFileRoute("/members/")({
   component: RouteComponent,
@@ -25,17 +26,17 @@ const columnHelper = createColumnHelper<MemberBrief>();
 
 const columns = [
   columnHelper.accessor(
-    (row) => [row.firstName, row.middleName, row.lastName].filter(Boolean).join(" "),
+    (row) => [row.firstName, row.middleNames, row.lastName].filter(Boolean).join(" "),
     {
       id: "name",
       header: "Name",
       cell: ({ row }) => (
         <Link
-          to="/members/$id"
-          params={{ id: row.original.id }}
+          to="/members/$memberId"
+          params={{ memberId: row.original.id }}
           className="font-medium hover:underline"
         >
-          {[row.original.firstName, row.original.middleName, row.original.lastName]
+          {[row.original.firstName, row.original.middleNames, row.original.lastName]
             .filter(Boolean)
             .join(" ")}
         </Link>
@@ -44,12 +45,7 @@ const columns = [
   ),
   columnHelper.accessor("dateOfBirth", {
     header: "Date of birth",
-    cell: ({ getValue }) =>
-      new Date(getValue()).toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }),
+    cell: ({ getValue }) => formatDate(getValue()),
   }),
 ];
 

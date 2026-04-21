@@ -12,8 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MembersIndexRouteImport } from './routes/members/index'
+import { Route as EventsIndexRouteImport } from './routes/events/index'
 import { Route as MembersAddRouteImport } from './routes/members/add'
-import { Route as MembersIdRouteImport } from './routes/members/$id'
+import { Route as MembersMemberIdRouteImport } from './routes/members/$memberId'
+import { Route as EventsEventIdRouteImport } from './routes/events/$eventId'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -30,58 +32,92 @@ const MembersIndexRoute = MembersIndexRouteImport.update({
   path: '/members/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EventsIndexRoute = EventsIndexRouteImport.update({
+  id: '/events/',
+  path: '/events/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MembersAddRoute = MembersAddRouteImport.update({
   id: '/members/add',
   path: '/members/add',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MembersIdRoute = MembersIdRouteImport.update({
-  id: '/members/$id',
-  path: '/members/$id',
+const MembersMemberIdRoute = MembersMemberIdRouteImport.update({
+  id: '/members/$memberId',
+  path: '/members/$memberId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsEventIdRoute = EventsEventIdRouteImport.update({
+  id: '/events/$eventId',
+  path: '/events/$eventId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/members/$id': typeof MembersIdRoute
+  '/events/$eventId': typeof EventsEventIdRoute
+  '/members/$memberId': typeof MembersMemberIdRoute
   '/members/add': typeof MembersAddRoute
+  '/events/': typeof EventsIndexRoute
   '/members/': typeof MembersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/members/$id': typeof MembersIdRoute
+  '/events/$eventId': typeof EventsEventIdRoute
+  '/members/$memberId': typeof MembersMemberIdRoute
   '/members/add': typeof MembersAddRoute
+  '/events': typeof EventsIndexRoute
   '/members': typeof MembersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/members/$id': typeof MembersIdRoute
+  '/events/$eventId': typeof EventsEventIdRoute
+  '/members/$memberId': typeof MembersMemberIdRoute
   '/members/add': typeof MembersAddRoute
+  '/events/': typeof EventsIndexRoute
   '/members/': typeof MembersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/members/$id' | '/members/add' | '/members/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/events/$eventId'
+    | '/members/$memberId'
+    | '/members/add'
+    | '/events/'
+    | '/members/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/members/$id' | '/members/add' | '/members'
+  to:
+    | '/'
+    | '/about'
+    | '/events/$eventId'
+    | '/members/$memberId'
+    | '/members/add'
+    | '/events'
+    | '/members'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/members/$id'
+    | '/events/$eventId'
+    | '/members/$memberId'
     | '/members/add'
+    | '/events/'
     | '/members/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  MembersIdRoute: typeof MembersIdRoute
+  EventsEventIdRoute: typeof EventsEventIdRoute
+  MembersMemberIdRoute: typeof MembersMemberIdRoute
   MembersAddRoute: typeof MembersAddRoute
+  EventsIndexRoute: typeof EventsIndexRoute
   MembersIndexRoute: typeof MembersIndexRoute
 }
 
@@ -108,6 +144,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MembersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/events/': {
+      id: '/events/'
+      path: '/events'
+      fullPath: '/events/'
+      preLoaderRoute: typeof EventsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/members/add': {
       id: '/members/add'
       path: '/members/add'
@@ -115,11 +158,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MembersAddRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/members/$id': {
-      id: '/members/$id'
-      path: '/members/$id'
-      fullPath: '/members/$id'
-      preLoaderRoute: typeof MembersIdRouteImport
+    '/members/$memberId': {
+      id: '/members/$memberId'
+      path: '/members/$memberId'
+      fullPath: '/members/$memberId'
+      preLoaderRoute: typeof MembersMemberIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events/$eventId': {
+      id: '/events/$eventId'
+      path: '/events/$eventId'
+      fullPath: '/events/$eventId'
+      preLoaderRoute: typeof EventsEventIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -128,8 +178,10 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  MembersIdRoute: MembersIdRoute,
+  EventsEventIdRoute: EventsEventIdRoute,
+  MembersMemberIdRoute: MembersMemberIdRoute,
   MembersAddRoute: MembersAddRoute,
+  EventsIndexRoute: EventsIndexRoute,
   MembersIndexRoute: MembersIndexRoute,
 }
 export const routeTree = rootRouteImport
