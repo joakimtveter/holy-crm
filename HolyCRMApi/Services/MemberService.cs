@@ -9,7 +9,7 @@ namespace HolyCRMApi.Services;
 /// Handles data access and business logic for members.
 /// </summary>
 /// <param name="db"></param>
-public class MemberService(AppDbContext db, ILogger<MemberService> logger)
+public class MemberService(AppDbContext db, ILogger<MemberService> logger) : IMemberService
 {
     /// <summary>
     /// Returns a paginated list of all members ordered by last name then first name.

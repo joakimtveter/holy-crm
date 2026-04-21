@@ -12,7 +12,7 @@ namespace HolyCRMApi.Controllers;
 [Produces("application/json")]
 [Consumes("application/json")]
 public class MembersController(
-    MemberService memberService,
+    IMemberService memberService,
     ILogger<MembersController> logger
     ) : ControllerBase
 {
@@ -46,7 +46,7 @@ public class MembersController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<MemberDto>> GetMemberById([FromRoute] Guid memberId)
     {
-        logger.LogDebug("Fetching member MemberId={MemberId}", memberId);
+        logger.LogDebug("Fetching member with MemberId={MemberId}", memberId);
 
         var member = await memberService.GetByIdAsync(memberId);
 
