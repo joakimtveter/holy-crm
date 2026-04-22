@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace HolyCRMApi.Dtos;
+namespace HolyCRMApi.Dtos.Events;
 
 /// <summary>
-/// 
+/// Query parameters for filtering and paginating events.
 /// </summary>
 public class GetEventsQuery
 {
@@ -14,8 +14,18 @@ public class GetEventsQuery
     public int Page { get; set; } = 1;
 
     /// <summary>
-    /// Number of members per page (1–100). Defaults to 15.
+    /// Number of events per page (1–100). Defaults to 15.
     /// </summary>
     [Range(1, 100)]
     public int PageSize { get; set; } = 15;
+
+    /// <summary>
+    /// Only return events starting on or after this date. Defaults to today.
+    /// </summary>
+    public DateOnly From { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+
+    /// <summary>
+    /// Only return events starting on or before this date. Optional.
+    /// </summary>
+    public DateOnly? To { get; set; }
 }
