@@ -1,6 +1,6 @@
 using HolyCRMApi.Data;
-using HolyCRMApi.Dtos;
 using HolyCRMApi.Dtos.Events;
+using HolyCRMApi.Dtos.Shared;
 using HolyCRMApi.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,16 +33,16 @@ public class EventService(AppDbContext db, ILogger<EventService> logger) : IEven
 
         return await db.Events
             .AsNoTracking()
-            .Where(e => e.EventStart >= from)
-            .Where(e => to == null || e.EventStart <= to)
-            .OrderBy(e => e.EventStart)
+            .Where(e => e.StartsAt >= from)
+            .Where(e => to == null || e.StartsAt <= to)
+            .OrderBy(e => e.StartsAt)
             .ToPagedResultAsync( e => new EventDto
             {
-                Id = e.EventId,
+                Id = e.Id,
                 Title = e.Title,
                 Description = e.Description,
-                EventStart = e.EventStart,
-                EventEnd = e.EventEnd,
+                StartsAt = e.StartsAt,
+                EndsAt = e.EndsAt,
             }, query.Page, query.PageSize, cancellationToken);
     }
     
@@ -58,14 +58,14 @@ public class EventService(AppDbContext db, ILogger<EventService> logger) : IEven
 
         return await db.Events
             .AsNoTracking()
-            .Where(e => e.EventId == eventId)
+            .Where(e => e.Id == eventId)
             .Select(e => new EventDto
             {
-                Id = e.EventId,
+                Id = e.Id,
                 Title = e.Title,
                 Description = e.Description,
-                EventStart = e.EventStart,
-                EventEnd = e.EventEnd,
+                StartsAt = e.StartsAt,
+                EndsAt = e.EndsAt,
             })
             .FirstOrDefaultAsync(cancellationToken);
     }
@@ -84,8 +84,8 @@ public class EventService(AppDbContext db, ILogger<EventService> logger) : IEven
         {
             Title = request.Title,
             Description = request.Description,
-            EventStart = request.EventStart,
-            EventEnd = request.EventEnd,
+            StartsAt = request.StartsAt,
+            EndsAt = request.EndsAt,
         };
 
         db.Events.Add(newEvent);
@@ -93,11 +93,11 @@ public class EventService(AppDbContext db, ILogger<EventService> logger) : IEven
 
         return new EventDto
         {
-            Id = newEvent.EventId,
+            Id = newEvent.Id,
             Title = newEvent.Title,
             Description = newEvent.Description,
-            EventStart = newEvent.EventStart,
-            EventEnd = newEvent.EventEnd,
+            StartsAt = newEvent.StartsAt,
+            EndsAt = newEvent.EndsAt,
         };
     }
 
@@ -122,18 +122,18 @@ public class EventService(AppDbContext db, ILogger<EventService> logger) : IEven
 
         eventToUpdate.Title = request.Title;
         eventToUpdate.Description = request.Description;
-        eventToUpdate.EventStart = request.EventStart;
-        eventToUpdate.EventEnd = request.EventEnd;
+        eventToUpdate.StartsAt = request.StartsAt;
+        eventToUpdate.EndsAt = request.EndsAt;
 
         await db.SaveChangesAsync(cancellationToken);
 
         return new EventDto
         {
-            Id = eventToUpdate.EventId,
+            Id = eventToUpdate.Id,
             Title = eventToUpdate.Title,
             Description = eventToUpdate.Description,
-            EventStart = eventToUpdate.EventStart,
-            EventEnd = eventToUpdate.EventEnd,
+            StartsAt = eventToUpdate.StartsAt,
+            EndsAt = eventToUpdate.EndsAt,
         };
     }
 
@@ -146,7 +146,7 @@ public class EventService(AppDbContext db, ILogger<EventService> logger) : IEven
     public async Task<bool> DeleteAsync(Guid eventId, CancellationToken cancellationToken)
     {
         var deleted = await db.Events
-            .Where(e => e.EventId == eventId)
+            .Where(e => e.Id == eventId)
             .ExecuteDeleteAsync(cancellationToken);
 
         return deleted > 0;

@@ -10,7 +10,7 @@ public class Event
     /// <summary>
     /// 
     /// </summary>
-    public Guid EventId { get; set; }
+    public Guid Id { get; set; }
     
     /// <summary>
     /// 
@@ -30,12 +30,26 @@ public class Event
     /// 
     /// </summary>
     [Required]
-    public DateTimeOffset EventStart {get; set;}
-    
+    public DateTimeOffset StartsAt {get; set;}
+
     /// <summary>
-    /// 
+    ///
     /// </summary>
     [Required]
-    public DateTimeOffset EventEnd {get; set;}
+    public DateTimeOffset EndsAt {get; set;}
+
+    /// <summary>
+    ///
+    /// </summary>
+    [Required]
+    public Guid VenueId {get; set;}
     
+    /// <summary>
+    ///
+    /// </summary>
+    [Required]
+    public Venue Venue {get; set;}
+    
+    [Required]
+    public bool IsDeleted {get; set;} = false;
 }

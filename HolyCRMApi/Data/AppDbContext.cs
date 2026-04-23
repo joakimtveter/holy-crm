@@ -7,5 +7,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     public DbSet<Member> Members => Set<Member>();
     public DbSet<Event> Events => Set<Event>();
+    public DbSet<Venue> Venues => Set<Venue>();
 
 }

@@ -1,8 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 
-
-namespace HolyCRMApi.Dtos;
+namespace HolyCRMApi.Dtos.Shared;
 
 /// <summary>
 /// Represents a single page of results from a paginated query.

@@ -25,12 +25,19 @@ public class CreateEventRequest
     /// 
     /// </summary>
     [Required]
-    public DateTimeOffset EventStart {get; set;}
+    public DateTimeOffset StartsAt {get; set;}
     
     /// <summary>
     /// 
     /// </summary>
     [Required]
-    public DateTimeOffset EventEnd {get; set;}
+    public DateTimeOffset EndsAt {get; set;}
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    [Required]
+    public Guid VenueId {get; set;}
+    
     
 }

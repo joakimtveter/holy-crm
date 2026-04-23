@@ -25,11 +25,11 @@ public class UpdateEventRequest
     /// The date and time the event starts.
     /// </summary>
     [Required]
-    public DateTimeOffset EventStart { get; set; }
+    public DateTimeOffset StartsAt { get; set; }
 
     /// <summary>
     /// The date and time the event ends.
     /// </summary>
     [Required]
-    public DateTimeOffset EventEnd { get; set; }
+    public DateTimeOffset EndsAt { get; set; }
 }

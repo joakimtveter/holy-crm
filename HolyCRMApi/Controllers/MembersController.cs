@@ -1,4 +1,5 @@
 using HolyCRMApi.Dtos;
+using HolyCRMApi.Dtos.Members;
 using HolyCRMApi.Services;
 using Microsoft.AspNetCore.Mvc;
 

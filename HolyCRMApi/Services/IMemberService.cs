@@ -1,4 +1,6 @@
 using HolyCRMApi.Dtos;
+using HolyCRMApi.Dtos.Members;
+using HolyCRMApi.Dtos.Shared;
 
 namespace HolyCRMApi.Services;
 
@@ -13,7 +15,7 @@ public interface IMemberService
     /// <param name="query">Pagination and filter parameters.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A paged result of members.</returns>
-    Task<PagedResult<MemberDto>> GetAllAsync(GetMembersQuery query, CancellationToken cancellationToken);
+    Task<PagedResult<MemberBriefDto>> GetAllAsync(GetMembersQuery query, CancellationToken cancellationToken);
 
     /// <summary>
     /// Returns a single member by their unique identifier.

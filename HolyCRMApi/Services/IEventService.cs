@@ -1,5 +1,6 @@
 using HolyCRMApi.Dtos;
 using HolyCRMApi.Dtos.Events;
+using HolyCRMApi.Dtos.Shared;
 
 namespace HolyCRMApi.Services;
 

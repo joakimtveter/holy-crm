@@ -1,5 +1,7 @@
 using HolyCRMApi.Data;
 using HolyCRMApi.Dtos;
+using HolyCRMApi.Dtos.Members;
+using HolyCRMApi.Dtos.Shared;
 using HolyCRMApi.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +18,8 @@ public class MemberService(AppDbContext db, ILogger<MemberService> logger) : IMe
     /// <param name="query">Filtering and pagination options.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>Paged list of members.</returns>
-    public async Task<PagedResult<MemberDto>> GetAllAsync(GetMembersQuery query, CancellationToken cancellationToken)
+    public async Task<PagedResult<MemberBriefDto>> GetAllAsync(GetMembersQuery query,
+        CancellationToken cancellationToken)
     {
         logger.LogDebug("Querying members Page={Page} PageSize={PageSize}", query.Page, query.PageSize);
 
@@ -24,9 +27,9 @@ public class MemberService(AppDbContext db, ILogger<MemberService> logger) : IMe
             .AsNoTracking()
             .OrderBy(m => m.LastName)
             .ThenBy(m => m.FirstName)
-            .ToPagedResultAsync(m => new MemberDto
+            .ToPagedResultAsync(m => new MemberBriefDto
             {
-                Id = m.MemberId,
+                Id = m.Id,
                 FirstName = m.FirstName,
                 MiddleNames = m.MiddleNames,
                 LastName = m.LastName,
@@ -49,7 +52,7 @@ public class MemberService(AppDbContext db, ILogger<MemberService> logger) : IMe
 
         var member = await db.Members
             .AsNoTracking()
-            .Where(m => m.MemberId == memberId)
+            .Where(m => m.Id == memberId)
             .FirstOrDefaultAsync(cancellationToken);
 
         return member is null ? null : ToDto(member);
@@ -123,7 +126,7 @@ public class MemberService(AppDbContext db, ILogger<MemberService> logger) : IMe
     public async Task<bool> DeleteAsync(Guid memberId, CancellationToken cancellationToken)
     {
         var deleted = await db.Members
-            .Where(m => m.MemberId == memberId)
+            .Where(m => m.Id == memberId)
             .ExecuteDeleteAsync(cancellationToken);
 
         return deleted > 0;
@@ -131,7 +134,7 @@ public class MemberService(AppDbContext db, ILogger<MemberService> logger) : IMe
 
     private static MemberDto ToDto(Member m) => new()
     {
-        Id = m.MemberId,
+        Id = m.Id,
         FirstName = m.FirstName,
         MiddleNames = m.MiddleNames,
         LastName = m.LastName,

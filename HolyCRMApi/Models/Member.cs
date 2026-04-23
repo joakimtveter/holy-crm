@@ -11,7 +11,7 @@ public class Member
     /// <summary>
     /// Unique identifier for the member
     /// </summary>
-    public Guid MemberId { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// First name of the member
@@ -52,5 +52,8 @@ public class Member
     /// UTC timestamp when the member was last updated.
     /// </summary>
     public DateTimeOffset UpdatedAt { get; set; }
+    
+    [Required]
+    public bool IsDeleted {get; set;} = false;
 
 }
