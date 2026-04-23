@@ -25,7 +25,7 @@ public class EventsController(IEventService eventService, ILogger<EventsControll
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PagedResult<EventDto>>> GetEvents(
         [FromQuery] GetEventsQuery query, 
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         logger.LogDebug("Fetching events on Page={Page} with PageSize={PageSize}", query.Page, query.PageSize);
         
@@ -48,7 +48,7 @@ public class EventsController(IEventService eventService, ILogger<EventsControll
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<EventDto>> GetEventById(
         [FromRoute] Guid eventId, 
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         logger.LogDebug("Fetching Event with EventId={eventId}", eventId);
 
@@ -74,7 +74,7 @@ public class EventsController(IEventService eventService, ILogger<EventsControll
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<EventDto>> CreateEvent(
         [FromBody] CreateEventRequest request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         logger.LogDebug("Creating event");
         var newEvent = await eventService.CreateAsync(request, cancellationToken);
@@ -95,7 +95,7 @@ public class EventsController(IEventService eventService, ILogger<EventsControll
     public async Task<ActionResult<EventDto>> UpdateEvent(
         [FromRoute] Guid eventId,
         [FromBody] UpdateEventRequest request,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken)
     {
         var updatedEvent = await eventService.UpdateAsync(eventId, request, cancellationToken);
 
@@ -114,13 +114,15 @@ public class EventsController(IEventService eventService, ILogger<EventsControll
     [HttpDelete("{eventId:guid}", Name = "DeleteEvent")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> DeleteEvent([FromRoute] Guid eventId, CancellationToken cancellationToken = default)
+    public async Task<ActionResult> DeleteEvent([FromRoute] Guid eventId, CancellationToken cancellationToken)
     {
-        logger.LogDebug("Deleting event");
-        var eventDeleted = await eventService.DeleteAsync(eventId, cancellationToken);
-        if (!eventDeleted)
+        logger.LogDebug("Deleting event with EventId={EventId}", eventId);
+        
+        var deleted = await eventService.DeleteAsync(eventId, cancellationToken);
+        
+        if (!deleted)
         {
-            logger.LogWarning("Could not delete event. Event not found with EventId={eventId}", eventId);
+            logger.LogWarning("Could not delete event. Event with EventId={eventId} not found.", eventId);
             return NotFound();
         }
         return NoContent();

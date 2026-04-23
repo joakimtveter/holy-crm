@@ -8,80 +8,69 @@ namespace HolyCRMApi.Services;
 /// <summary>
 /// Handles data access and business logic for members.
 /// </summary>
-/// <param name="db"></param>
 public class MemberService(AppDbContext db, ILogger<MemberService> logger) : IMemberService
 {
     /// <summary>
     /// Returns a paginated list of all members ordered by last name then first name.
     /// </summary>
-    /// <param name="page">1-based page number.</param>
-    /// <param name="pageSize">Number of members per page.</param>
-    /// <returns>List of members for the requested page.</returns>
-    public async Task<List<MemberDto>> GetAllAsync(int page, int pageSize)
+    /// <param name="query">Filtering and pagination options.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>Paged list of members.</returns>
+    public async Task<PagedResult<MemberDto>> GetAllAsync(GetMembersQuery query, CancellationToken cancellationToken)
     {
-        logger.LogDebug("Querying members Page={Page} PageSize={PageSize}", page, pageSize);
+        logger.LogDebug("Querying members Page={Page} PageSize={PageSize}", query.Page, query.PageSize);
 
         return await db.Members
             .AsNoTracking()
             .OrderBy(m => m.LastName)
             .ThenBy(m => m.FirstName)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .Select(m => new MemberDto
+            .ToPagedResultAsync(m => new MemberDto
             {
                 Id = m.MemberId,
                 FirstName = m.FirstName,
                 MiddleNames = m.MiddleNames,
-                LastName  = m.LastName,
+                LastName = m.LastName,
                 DateOfBirth = m.DateOfBirth,
                 Gender = m.Gender,
                 CreatedAt = m.CreatedAt,
                 UpdatedAt = m.UpdatedAt,
-            })
-            .ToListAsync();
-    }  
-    
+            }, query.Page, query.PageSize, cancellationToken);
+    }
+
     /// <summary>
     /// Returns a single member by their ID, or null if not found.
     /// </summary>
     /// <param name="memberId">The member's unique identifier.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The member, or null.</returns>
-    public async Task<MemberDto?> GetByIdAsync(Guid memberId)
+    public async Task<MemberDto?> GetByIdAsync(Guid memberId, CancellationToken cancellationToken)
     {
         logger.LogDebug("Querying member MemberId={MemberId}", memberId);
 
-        return await db.Members
+        var member = await db.Members
             .AsNoTracking()
             .Where(m => m.MemberId == memberId)
-            .Select(m => new MemberDto
-            {
-                Id = m.MemberId,
-                FirstName = m.FirstName,
-                MiddleNames = m.MiddleNames,
-                LastName  = m.LastName,
-                DateOfBirth = m.DateOfBirth,
-                Gender = m.Gender,
-                CreatedAt = m.CreatedAt,
-                UpdatedAt = m.UpdatedAt,
-            })
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return member is null ? null : ToDto(member);
     }
-    
+
     /// <summary>
     /// Updates an existing member. Returns the updated member, or null if not found.
     /// </summary>
-    /// <param name="id">The member's unique identifier.</param>
+    /// <param name="memberId">The member's unique identifier.</param>
     /// <param name="request">The updated member data.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The updated member, or null.</returns>
-    public async Task<MemberDto?> UpdateAsync(Guid id, UpdateMemberRequest request)
+    public async Task<MemberDto?> UpdateAsync(Guid memberId, UpdateMemberRequest request, CancellationToken cancellationToken)
     {
-        logger.LogDebug("Updating member MemberId={MemberId}", id);
+        logger.LogDebug("Updating member MemberId={MemberId}", memberId);
 
-        var member = await db.Members.FindAsync(id);
+        var member = await db.Members.FindAsync([memberId], cancellationToken);
 
         if (member is null)
         {
-            logger.LogWarning("Update failed — member not found MemberId={MemberId}", id);
+            logger.LogWarning("Update failed — member not found MemberId={MemberId}", memberId);
             return null;
         }
 
@@ -92,27 +81,18 @@ public class MemberService(AppDbContext db, ILogger<MemberService> logger) : IMe
         member.Gender = request.Gender;
         member.UpdatedAt = DateTimeOffset.UtcNow;
 
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(cancellationToken);
 
-        return new MemberDto
-        {
-            Id = member.MemberId,
-            FirstName = member.FirstName,
-            MiddleNames = member.MiddleNames,
-            LastName = member.LastName,
-            DateOfBirth = member.DateOfBirth,
-            Gender = member.Gender,
-            CreatedAt = member.CreatedAt,
-            UpdatedAt = member.UpdatedAt,
-        };
+        return ToDto(member);
     }
-    
+
     /// <summary>
     /// Creates a new member and returns the created member.
     /// </summary>
     /// <param name="request">The new member data.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The newly created member.</returns>
-    public async Task<MemberDto> CreateAsync(CreateMemberRequest request)
+    public async Task<MemberDto> CreateAsync(CreateMemberRequest request, CancellationToken cancellationToken)
     {
         logger.LogDebug("Creating member");
 
@@ -129,41 +109,35 @@ public class MemberService(AppDbContext db, ILogger<MemberService> logger) : IMe
         };
 
         db.Members.Add(member);
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(cancellationToken);
 
-        return new MemberDto
-        {
-            Id = member.MemberId,
-            FirstName = member.FirstName,
-            MiddleNames = member.MiddleNames,
-            LastName = member.LastName,
-            DateOfBirth = member.DateOfBirth,
-            Gender = member.Gender,
-            CreatedAt = member.CreatedAt,
-            UpdatedAt = member.UpdatedAt,
-        };
+        return ToDto(member);
     }
-    
+
     /// <summary>
     /// Deletes a member by ID. Returns true if deleted, false if not found.
     /// </summary>
     /// <param name="memberId">The member's unique identifier.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>True if the member was deleted, false if not found.</returns>
-    public async Task<bool> DeleteAsync(Guid memberId)
+    public async Task<bool> DeleteAsync(Guid memberId, CancellationToken cancellationToken)
     {
-        logger.LogDebug("Deleting member MemberId={MemberId}", memberId);
+        var deleted = await db.Members
+            .Where(m => m.MemberId == memberId)
+            .ExecuteDeleteAsync(cancellationToken);
 
-        var member = await db.Members.FindAsync(memberId);
-
-        if (member == null)
-        {
-            logger.LogWarning("Delete failed — member not found MemberId={MemberId}", memberId);
-            return false;
-        }
-        
-        db.Members.Remove(member);
-        await db.SaveChangesAsync();
-
-        return true;
+        return deleted > 0;
     }
+
+    private static MemberDto ToDto(Member m) => new()
+    {
+        Id = m.MemberId,
+        FirstName = m.FirstName,
+        MiddleNames = m.MiddleNames,
+        LastName = m.LastName,
+        DateOfBirth = m.DateOfBirth,
+        Gender = m.Gender,
+        CreatedAt = m.CreatedAt,
+        UpdatedAt = m.UpdatedAt,
+    };
 }

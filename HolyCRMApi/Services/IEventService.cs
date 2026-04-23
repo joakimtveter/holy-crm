@@ -11,7 +11,7 @@ public interface IEventService
     /// <summary>
     /// Returns a paginated list of events, optionally filtered by date range.
     /// </summary>
-    /// <param name="query">Pagination and date filter parameters.</param>
+    /// <param name="query">Pagination and filter parameters.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A paged result of events.</returns>
     Task<PagedResult<EventDto>> GetAllAsync(GetEventsQuery query, CancellationToken cancellationToken);
@@ -39,7 +39,7 @@ public interface IEventService
     /// <param name="request">The updated event details.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The updated event.</returns>
-    Task<EventDto?> UpdateAsync(Guid eventId, UpdateEventRequest request, CancellationToken cancellationToken = default);
+    Task<EventDto?> UpdateAsync(Guid eventId, UpdateEventRequest request, CancellationToken cancellationToken);
 
     /// <summary>
     /// Deletes an event by its unique identifier.
