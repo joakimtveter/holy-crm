@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 
 import SiteFooter from "#/shared/components/site-footer.tsx";
 import SiteHeader from "#/shared/components/site-header.tsx";
+import { Toaster } from "#/shared/components/ui/sonner.tsx";
 
 import { queryClient } from "../router";
 
@@ -51,6 +52,7 @@ function RootDocument({ children }: { children: ReactNode }) {
           <SiteHeader />
           {children}
           <SiteFooter />
+          <Toaster />
           <TanStackDevtools
             config={{
               position: "bottom-right",

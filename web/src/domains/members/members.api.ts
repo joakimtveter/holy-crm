@@ -1,6 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 
 import type { Member, MemberBrief } from "#/domains/members/member.types.ts";
+import type { CreateMemberPayload } from "#/domains/members/members.schema.ts";
 import { MEMBERS, SINGLE_MEMBER } from "#/shared/constants/query-keys.ts";
 import type { Pagination } from "#/shared/types/api.types.ts";
 
@@ -52,5 +53,19 @@ async function getMemberById(memberId: string): Promise<Member> {
   });
   if (!response.ok) throw new Error(`Failed to fetch with id: ${memberId}`);
 
+  return response.json();
+}
+
+export async function createMember(payload: CreateMemberPayload): Promise<Member> {
+  const response = await fetch(`${BASE_URL}/members`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) throw new Error(`Failed to create member: ${JSON.stringify(payload)}`);
   return response.json();
 }

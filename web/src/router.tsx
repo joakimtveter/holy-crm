@@ -12,15 +12,13 @@ export const queryClient = new QueryClient({
 });
 
 export function getRouter() {
-  const router = createTanStackRouter({
+  return createTanStackRouter({
     routeTree,
     context: { queryClient },
     scrollRestoration: true,
     defaultPreload: "intent",
     defaultPreloadStaleTime: 0,
   });
-
-  return router;
 }
 
 declare module "@tanstack/react-router" {
