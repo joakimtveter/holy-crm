@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 
 import {
   createMember,
@@ -25,7 +24,6 @@ export function useCreateMember() {
       queryClient.invalidateQueries({
         queryKey: [MEMBERS],
       });
-      toast.success("Member created successfully.");
     },
   });
 }

@@ -8,6 +8,7 @@ import {
 
 import type { MemberBrief } from "#/domains/members/member.types.ts";
 import { useMembers } from "#/domains/members/use-members.ts";
+import PageWrapper from "#/shared/components/page-wrapper.tsx";
 import {
   Table,
   TableBody,
@@ -17,6 +18,8 @@ import {
   TableRow,
 } from "#/shared/components/ui/table";
 import { formatDate } from "#/shared/lib/datetime.ts";
+import ErrorPage from "#/shared/pages/error-page.tsx";
+import LoadingPage from "#/shared/pages/loading-page.tsx";
 
 export const Route = createFileRoute("/members/")({
   component: RouteComponent,
@@ -50,18 +53,17 @@ const columns = [
 ];
 
 function RouteComponent() {
-  const { data: members = [] } = useMembers();
+  const { data, isError, error } = useMembers();
 
   const table = useReactTable({
-    data: members,
+    data: data?.items ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
-  return (
-    <div className="p-6">
-      <h1 className="mb-6 text-2xl font-semibold">Members</h1>
-      <div className="bg-card rounded-lg border">
+  if (data) {
+    return (
+      <PageWrapper title="Members">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -97,7 +99,11 @@ function RouteComponent() {
             )}
           </TableBody>
         </Table>
-      </div>
-    </div>
-  );
+      </PageWrapper>
+    );
+  }
+
+  if (isError) return <ErrorPage error={error} />;
+
+  return <LoadingPage title="Members" />;
 }

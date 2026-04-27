@@ -1,3 +1,4 @@
+import { format, parse, isValid } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useId, useState } from "react";
 
@@ -24,13 +25,13 @@ type DatePickerProps = {
 };
 
 function toISODate(date: Date): string {
-  return date.toISOString().split("T")[0];
+  return format(date, "yyyy-MM-dd");
 }
 
 function parseDate(value: string): Date | undefined {
   if (!value) return undefined;
-  const d = new Date(value);
-  return isNaN(d.getTime()) ? undefined : d;
+  const date = parse(value, "yyyy-MM-dd", new Date());
+  return isValid(date) ? date : undefined;
 }
 
 export function DatePicker(props: DatePickerProps) {

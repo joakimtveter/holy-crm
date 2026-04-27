@@ -3,7 +3,7 @@ import { queryOptions } from "@tanstack/react-query";
 import type { Member, MemberBrief } from "#/domains/members/member.types.ts";
 import type { CreateMemberPayload } from "#/domains/members/members.schema.ts";
 import { MEMBERS, SINGLE_MEMBER } from "#/shared/constants/query-keys.ts";
-import type { Pagination } from "#/shared/types/api.types.ts";
+import type { PaginatedList, Pagination } from "#/shared/types/api.types.ts";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -14,7 +14,7 @@ export function useMembersQueryOptions(pagination?: Pagination) {
   });
 }
 
-async function getMembers(pagination?: Pagination): Promise<MemberBrief[]> {
+async function getMembers(pagination?: Pagination): Promise<PaginatedList<MemberBrief>> {
   const url = new URL(`${BASE_URL}/members`);
 
   if (pagination) {

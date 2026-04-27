@@ -28,7 +28,17 @@ type SingleSelectProps<T extends string = string> = {
 };
 
 export default function SingleSelect<T extends string = string>(props: SingleSelectProps<T>) {
-  const { label, id: providedId, helpText, errorMessage, placeholder, options, value, onChange, onBlur } = props;
+  const {
+    label,
+    id: providedId,
+    helpText,
+    errorMessage,
+    placeholder,
+    options,
+    value,
+    onChange,
+    onBlur,
+  } = props;
 
   const generatedId = useId();
   const id = providedId ?? generatedId;

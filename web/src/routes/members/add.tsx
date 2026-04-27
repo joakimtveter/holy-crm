@@ -1,6 +1,7 @@
 import { useForm } from "@tanstack/react-form";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { SubmitEvent } from "react";
+import { toast } from "sonner";
 
 import { Gender } from "#/domains/members/member.types.ts";
 import {
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/members/add")({
 
 function RouteComponent() {
   const { mutate, isPending } = useCreateMember();
+  const navigate = useNavigate();
   const form = useForm({
     defaultValues: {
       firstName: "",
@@ -34,7 +36,17 @@ function RouteComponent() {
     },
     onSubmit: async ({ value }) => {
       if (isPending) return;
-      mutate(value);
+      mutate(value, {
+        onSuccess: (member) => {
+          form.reset();
+          toast.success("Member created successfully.", {
+            action: {
+              label: "View member",
+              onClick: () => navigate({ to: "/members/$memberId", params: { memberId: member.id } }),
+            },
+          });
+        },
+      });
     },
   });
 
