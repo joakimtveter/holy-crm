@@ -1,6 +1,6 @@
 import { format, parse, isValid } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 import { Calendar } from "#/shared/components/ui/calendar.tsx";
 import { Field, FieldDescription, FieldLabel } from "#/shared/components/ui/field.tsx";
@@ -12,6 +12,9 @@ import {
 } from "#/shared/components/ui/input-group.tsx";
 import { Popover, PopoverContent, PopoverTrigger } from "#/shared/components/ui/popover.tsx";
 import { formatDate } from "#/shared/lib/datetime.ts";
+
+const ISO_FORMAT = "yyyy-MM-dd";
+const DISPLAY_FORMAT = "dd.MM.yyyy";
 
 type DatePickerProps = {
   label: string;
@@ -25,12 +28,18 @@ type DatePickerProps = {
 };
 
 function toISODate(date: Date): string {
-  return format(date, "yyyy-MM-dd");
+  return format(date, ISO_FORMAT);
 }
 
-function parseDate(value: string): Date | undefined {
+function parseISODate(value: string): Date | undefined {
   if (!value) return undefined;
-  const date = parse(value, "yyyy-MM-dd", new Date());
+  const date = parse(value, ISO_FORMAT, new Date());
+  return isValid(date) ? date : undefined;
+}
+
+function parseDisplayDate(value: string): Date | undefined {
+  if (!value) return undefined;
+  const date = parse(value, DISPLAY_FORMAT, new Date());
   return isValid(date) ? date : undefined;
 }
 
@@ -47,14 +56,40 @@ export function DatePicker(props: DatePickerProps) {
   } = props;
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState(() => formatDate(value));
-  const [month, setMonth] = useState<Date | undefined>(() => parseDate(value));
+  const [month, setMonth] = useState<Date | undefined>(() => parseISODate(value));
 
   const generatedId = useId();
   const id = providedId ?? generatedId;
 
-  const selectedDate = parseDate(value);
+  const selectedDate = parseISODate(value);
   const hasError = !!errorMessage;
   const renderDescription = !!helpText || hasError;
+
+  useEffect(() => {
+    setInputValue(formatDate(value));
+    const parsed = parseISODate(value);
+    if (parsed) setMonth(parsed);
+  }, [value]);
+
+  const handleInputChange = (next: string) => {
+    setInputValue(next);
+    if (!next) {
+      onChange("");
+      return;
+    }
+    const parsed = parseDisplayDate(next);
+    if (parsed) {
+      setMonth(parsed);
+      onChange(toISODate(parsed));
+    }
+  };
+
+  const handleBlur = () => {
+    if (inputValue && !parseDisplayDate(inputValue)) {
+      setInputValue(formatDate(value));
+    }
+    onBlur?.();
+  };
 
   return (
     <Field className="w-44" data-component="DatePicker">
@@ -64,17 +99,8 @@ export function DatePicker(props: DatePickerProps) {
           id={id}
           value={inputValue}
           placeholder={placeholder}
-          onChange={(e) => {
-            setInputValue(e.target.value);
-            const parsed = parseDate(e.target.value);
-            if (parsed) {
-              setMonth(parsed);
-              onChange(toISODate(parsed));
-            } else {
-              onChange("");
-            }
-          }}
-          onBlur={onBlur}
+          onChange={(e) => handleInputChange(e.target.value)}
+          onBlur={handleBlur}
           onKeyDown={(e) => {
             if (e.key === "ArrowDown") {
               e.preventDefault();
@@ -111,7 +137,7 @@ export function DatePicker(props: DatePickerProps) {
                   if (date) {
                     const iso = toISODate(date);
                     onChange(iso);
-                    setInputValue(formatDate(iso));
+                    setInputValue(format(date, DISPLAY_FORMAT));
                     setMonth(date);
                   }
                   setOpen(false);
