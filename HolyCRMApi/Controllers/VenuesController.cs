@@ -14,6 +14,10 @@ namespace HolyCRMApi.Controllers;
 [Consumes("application/json")]
 public class VenuesController(IVenueService venueService, ILogger<VenuesController> logger) : ControllerBase
 {
+    /// <summary>Returns a paginated list of venues.</summary>
+    /// <param name="query">Pagination options.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A paged list of venues.</returns>
     [HttpGet(Name = "GetVenues")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -29,6 +33,11 @@ public class VenuesController(IVenueService venueService, ILogger<VenuesControll
         return Ok(venues);
     }
 
+    /// <summary>Returns a single venue by its ID.</summary>
+    /// <param name="venueId">The venue's unique identifier.</param>
+    /// <param name="includeDeleted">Whether to include soft-deleted venues.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The venue, or 404 if not found.</returns>
     [HttpGet("{venueId:guid}", Name = "GetVenueById")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -51,6 +60,10 @@ public class VenuesController(IVenueService venueService, ILogger<VenuesControll
         return Ok(venue);
     }
 
+    /// <summary>Creates a new venue.</summary>
+    /// <param name="request">The venue details.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The created venue.</returns>
     [HttpPost(Name = "CreateVenue")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -64,6 +77,11 @@ public class VenuesController(IVenueService venueService, ILogger<VenuesControll
     }
 
 
+    /// <summary>Updates an existing venue.</summary>
+    /// <param name="venueId">The venue's unique identifier.</param>
+    /// <param name="request">The updated venue details.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The updated venue, or 404 if not found.</returns>
     [HttpPut("{venueId:guid}", Name = "UpdateVenue")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -84,6 +102,10 @@ public class VenuesController(IVenueService venueService, ILogger<VenuesControll
         return Ok(updatedVenue);
     }
 
+    /// <summary>Soft-deletes a venue.</summary>
+    /// <param name="venueId">The venue's unique identifier.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>204 if deleted, 404 if not found.</returns>
     [HttpDelete("{venueId:guid}", Name = "DeleteVenue")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -101,6 +123,10 @@ public class VenuesController(IVenueService venueService, ILogger<VenuesControll
         return NoContent();
     }    
     
+    /// <summary>Permanently deletes a venue. This action is irreversible.</summary>
+    /// <param name="venueId">The venue's unique identifier.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>204 if deleted, 404 if not found.</returns>
     [HttpDelete("{venueId:guid}/permanent", Name = "HardDeleteVenue")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

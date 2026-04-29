@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using HolyCRMApi.Enums;
+using HolyCRMApi.Validation;
 
 namespace HolyCRMApi.Dtos;
 
@@ -31,6 +32,7 @@ public class CreateMemberRequest
     /// <summary>
     /// Date of birth of the member, if known.
     /// </summary>
+    [NotInFuture]
     public DateOnly? DateOfBirth { get; init; }
 
     /// <summary>
