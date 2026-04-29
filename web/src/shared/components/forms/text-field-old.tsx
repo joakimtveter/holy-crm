@@ -1,8 +1,7 @@
 import { useId } from "react";
 
-import { Field, FieldDescription, FieldError, FieldLabel } from "#/shared/components/ui/field.tsx";
+import { Field, FieldDescription, FieldLabel } from "#/shared/components/ui/field.tsx";
 import { Input } from "#/shared/components/ui/input.tsx";
-import { useFieldContext } from "#/shared/hooks/form-context.tsx";
 import type { AutoCompleteTokens } from "#/shared/types/form.types.ts";
 
 type TextFieldProps = {
@@ -11,6 +10,9 @@ type TextFieldProps = {
   label: string;
   placeholder?: string;
   autoComplete?: AutoCompleteTokens;
+  value: string;
+  onChange: (value: string) => void;
+  onBlur: () => void;
   helpText?: string;
   errorMessage?: string;
 };
@@ -21,16 +23,17 @@ export default function TextField(props: TextFieldProps) {
     id: providedId,
     placeholder,
     autoComplete = "on",
+    value,
+    onChange,
+    onBlur,
     helpText,
     errorMessage,
   } = props;
-
-  const field = useFieldContext<string>();
   const generatedId = useId();
   const id = providedId ?? generatedId;
 
-  const hasError = !!field.state.meta.errors[0]?.message;
-  const renderDescription = !helpText || !hasError;
+  const hasError = !!errorMessage;
+  const renderDescription = !!helpText || hasError;
 
   return (
     <Field data-component="TextField">
@@ -40,14 +43,13 @@ export default function TextField(props: TextFieldProps) {
         type={type}
         placeholder={placeholder}
         autoComplete={autoComplete}
-        value={field.state.value}
-        onChange={(e) => field.handleChange(e.target.value)}
-        onBlur={field.handleBlur}
+        value={value}
+        onChange={(e) => onChange?.(e.target.value)}
+        onBlur={onBlur}
         aria-labelledby={id}
         aria-invalid={hasError}
       />
       {renderDescription && <FieldDescription>{errorMessage ?? helpText}</FieldDescription>}
-      {hasError && <FieldError>{field.state.meta.errors[0]?.message}</FieldError>}
     </Field>
   );
 }

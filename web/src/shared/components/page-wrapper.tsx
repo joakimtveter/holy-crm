@@ -4,16 +4,20 @@ import Heading from "#/shared/components/heading.tsx";
 
 type PageWrapperProps = {
   title: string;
-  children?: ReactNode;
+  children?: ReactNode | ReactNode[];
+  actions?: ReactNode | ReactNode[];
 };
 
 export default function PageWrapper(props: PageWrapperProps) {
-  const { title, children } = props;
+  const { title, children, actions } = props;
   return (
     <main className="m-auto w-full px-8 py-6">
-      <Heading level={1} size="xl">
-        {title}
-      </Heading>
+      <div className="mb-2 flex items-center justify-between">
+        <Heading level={1} size="xl">
+          {title}
+        </Heading>
+        {actions != undefined && <div>{actions}</div>}
+      </div>
       {children}
     </main>
   );

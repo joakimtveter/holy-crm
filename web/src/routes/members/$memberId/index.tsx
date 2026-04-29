@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemberById } from "#/domains/members/use-members.ts";
 import PageWrapper from "#/shared/components/page-wrapper.tsx";
 
-export const Route = createFileRoute("/members/$memberId")({
+export const Route = createFileRoute("/members/$memberId/")({
   component: RouteComponent,
 });
 

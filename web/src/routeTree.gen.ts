@@ -14,8 +14,10 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as MembersIndexRouteImport } from './routes/members/index'
 import { Route as EventsIndexRouteImport } from './routes/events/index'
 import { Route as MembersAddRouteImport } from './routes/members/add'
-import { Route as MembersMemberIdRouteImport } from './routes/members/$memberId'
+import { Route as EventsAddRouteImport } from './routes/events/add'
 import { Route as EventsEventIdRouteImport } from './routes/events/$eventId'
+import { Route as MembersMemberIdIndexRouteImport } from './routes/members/$memberId/index'
+import { Route as MembersMemberIdEditRouteImport } from './routes/members/$memberId/edit'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -42,9 +44,9 @@ const MembersAddRoute = MembersAddRouteImport.update({
   path: '/members/add',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MembersMemberIdRoute = MembersMemberIdRouteImport.update({
-  id: '/members/$memberId',
-  path: '/members/$memberId',
+const EventsAddRoute = EventsAddRouteImport.update({
+  id: '/events/add',
+  path: '/events/add',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsEventIdRoute = EventsEventIdRouteImport.update({
@@ -52,34 +54,50 @@ const EventsEventIdRoute = EventsEventIdRouteImport.update({
   path: '/events/$eventId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MembersMemberIdIndexRoute = MembersMemberIdIndexRouteImport.update({
+  id: '/members/$memberId/',
+  path: '/members/$memberId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MembersMemberIdEditRoute = MembersMemberIdEditRouteImport.update({
+  id: '/members/$memberId/edit',
+  path: '/members/$memberId/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/events/$eventId': typeof EventsEventIdRoute
-  '/members/$memberId': typeof MembersMemberIdRoute
+  '/events/add': typeof EventsAddRoute
   '/members/add': typeof MembersAddRoute
   '/events/': typeof EventsIndexRoute
   '/members/': typeof MembersIndexRoute
+  '/members/$memberId/edit': typeof MembersMemberIdEditRoute
+  '/members/$memberId/': typeof MembersMemberIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/events/$eventId': typeof EventsEventIdRoute
-  '/members/$memberId': typeof MembersMemberIdRoute
+  '/events/add': typeof EventsAddRoute
   '/members/add': typeof MembersAddRoute
   '/events': typeof EventsIndexRoute
   '/members': typeof MembersIndexRoute
+  '/members/$memberId/edit': typeof MembersMemberIdEditRoute
+  '/members/$memberId': typeof MembersMemberIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/events/$eventId': typeof EventsEventIdRoute
-  '/members/$memberId': typeof MembersMemberIdRoute
+  '/events/add': typeof EventsAddRoute
   '/members/add': typeof MembersAddRoute
   '/events/': typeof EventsIndexRoute
   '/members/': typeof MembersIndexRoute
+  '/members/$memberId/edit': typeof MembersMemberIdEditRoute
+  '/members/$memberId/': typeof MembersMemberIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -87,38 +105,46 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/events/$eventId'
-    | '/members/$memberId'
+    | '/events/add'
     | '/members/add'
     | '/events/'
     | '/members/'
+    | '/members/$memberId/edit'
+    | '/members/$memberId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/events/$eventId'
-    | '/members/$memberId'
+    | '/events/add'
     | '/members/add'
     | '/events'
     | '/members'
+    | '/members/$memberId/edit'
+    | '/members/$memberId'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/events/$eventId'
-    | '/members/$memberId'
+    | '/events/add'
     | '/members/add'
     | '/events/'
     | '/members/'
+    | '/members/$memberId/edit'
+    | '/members/$memberId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   EventsEventIdRoute: typeof EventsEventIdRoute
-  MembersMemberIdRoute: typeof MembersMemberIdRoute
+  EventsAddRoute: typeof EventsAddRoute
   MembersAddRoute: typeof MembersAddRoute
   EventsIndexRoute: typeof EventsIndexRoute
   MembersIndexRoute: typeof MembersIndexRoute
+  MembersMemberIdEditRoute: typeof MembersMemberIdEditRoute
+  MembersMemberIdIndexRoute: typeof MembersMemberIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -158,11 +184,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MembersAddRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/members/$memberId': {
-      id: '/members/$memberId'
-      path: '/members/$memberId'
-      fullPath: '/members/$memberId'
-      preLoaderRoute: typeof MembersMemberIdRouteImport
+    '/events/add': {
+      id: '/events/add'
+      path: '/events/add'
+      fullPath: '/events/add'
+      preLoaderRoute: typeof EventsAddRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events/$eventId': {
@@ -172,6 +198,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsEventIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/members/$memberId/': {
+      id: '/members/$memberId/'
+      path: '/members/$memberId'
+      fullPath: '/members/$memberId/'
+      preLoaderRoute: typeof MembersMemberIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/members/$memberId/edit': {
+      id: '/members/$memberId/edit'
+      path: '/members/$memberId/edit'
+      fullPath: '/members/$memberId/edit'
+      preLoaderRoute: typeof MembersMemberIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -179,10 +219,12 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   EventsEventIdRoute: EventsEventIdRoute,
-  MembersMemberIdRoute: MembersMemberIdRoute,
+  EventsAddRoute: EventsAddRoute,
   MembersAddRoute: MembersAddRoute,
   EventsIndexRoute: EventsIndexRoute,
   MembersIndexRoute: MembersIndexRoute,
+  MembersMemberIdEditRoute: MembersMemberIdEditRoute,
+  MembersMemberIdIndexRoute: MembersMemberIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

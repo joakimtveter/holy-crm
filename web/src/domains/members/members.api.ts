@@ -1,15 +1,15 @@
 import { queryOptions } from "@tanstack/react-query";
 
 import type { Member, MemberBrief } from "#/domains/members/member.types.ts";
-import type { CreateMemberPayload } from "#/domains/members/members.schema.ts";
-import { MEMBERS, SINGLE_MEMBER } from "#/shared/constants/query-keys.ts";
+import type { MemberPayload } from "#/domains/members/members.schema.ts";
+import { ALL_MEMBERS, SINGLE_MEMBER } from "#/shared/constants/query-keys.ts";
 import type { PaginatedList, Pagination } from "#/shared/types/api.types.ts";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export function useMembersQueryOptions(pagination?: Pagination) {
   return queryOptions({
-    queryKey: [MEMBERS, pagination],
+    queryKey: [ALL_MEMBERS, pagination],
     queryFn: () => getMembers(pagination),
   });
 }
@@ -56,7 +56,7 @@ async function getMemberById(memberId: string): Promise<Member> {
   return response.json();
 }
 
-export async function createMember(payload: CreateMemberPayload): Promise<Member> {
+export async function createMember(payload: MemberPayload): Promise<Member> {
   const response = await fetch(`${BASE_URL}/members`, {
     method: "POST",
     headers: {
@@ -67,5 +67,19 @@ export async function createMember(payload: CreateMemberPayload): Promise<Member
   });
 
   if (!response.ok) throw new Error(`Failed to create member: ${JSON.stringify(payload)}`);
+  return response.json();
+}
+
+export async function updateMember(memberId: string, payload: MemberPayload): Promise<Member> {
+  const response = await fetch(`${BASE_URL}/members/${memberId}`, {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) throw new Error(`Failed to update member: ${JSON.stringify(payload)}`);
   return response.json();
 }

@@ -1,4 +1,6 @@
-export const MEMBERS = "members";
+export const ALL_MEMBERS = "members";
 export const SINGLE_MEMBER = "member";
-export const EVENTS = "events";
+export const ALL_EVENTS = "events";
 export const SINGLE_EVENT = "event";
+export const ALL_VENUES = "venues";
+export const SINGLE_VENUE = "venue";

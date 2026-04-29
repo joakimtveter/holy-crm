@@ -5,10 +5,13 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { EyeIcon, PencilIcon } from "lucide-react";
 
 import type { MemberBrief } from "#/domains/members/member.types.ts";
 import { useMembers } from "#/domains/members/use-members.ts";
 import PageWrapper from "#/shared/components/page-wrapper.tsx";
+import { IconLinkButton } from "#/shared/components/ui/icon-link-button.tsx";
+import { LinkButton } from "#/shared/components/ui/link-button.tsx";
 import {
   Table,
   TableBody,
@@ -50,6 +53,28 @@ const columns = [
     header: "Date of birth",
     cell: ({ getValue }) => formatDate(getValue()),
   }),
+  columnHelper.display({
+    id: "actions",
+    header: () => <span className="sr-only">Actions</span>,
+    cell: ({ row }) => (
+      <div className="flex justify-end">
+        <IconLinkButton
+          to="/members/$memberId"
+          params={{ memberId: row.original.id }}
+          aria-label={`Edit ${row.original.firstName} ${row.original.lastName}`}
+        >
+          <EyeIcon />
+        </IconLinkButton>
+        <IconLinkButton
+          to="/members/$memberId/edit"
+          params={{ memberId: row.original.id }}
+          aria-label={`Edit ${row.original.firstName} ${row.original.lastName}`}
+        >
+          <PencilIcon />
+        </IconLinkButton>
+      </div>
+    ),
+  }),
 ];
 
 function RouteComponent() {
@@ -63,7 +88,10 @@ function RouteComponent() {
 
   if (data) {
     return (
-      <PageWrapper title="Members">
+      <PageWrapper
+        title="Members"
+        actions={<LinkButton to="/members/add">Add a new member</LinkButton>}
+      >
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

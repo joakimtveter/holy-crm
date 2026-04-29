@@ -1,4 +1,4 @@
-import { format, parse, isValid } from "date-fns";
+import { format, isValid, parse } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useEffect, useId, useState } from "react";
 
@@ -11,14 +11,18 @@ import {
   InputGroupInput,
 } from "#/shared/components/ui/input-group.tsx";
 import { Popover, PopoverContent, PopoverTrigger } from "#/shared/components/ui/popover.tsx";
-import { formatDate } from "#/shared/lib/datetime.ts";
+import { cn } from "#/shared/lib/utils.ts";
 
 const ISO_FORMAT = "yyyy-MM-dd";
 const DISPLAY_FORMAT = "dd.MM.yyyy";
+const CALENDAR_START_MONTH = new Date(1900, 0);
+const CALENDAR_END_MONTH = new Date();
 
 type DatePickerProps = {
   label: string;
   id?: string;
+  name?: string;
+  className?: string;
   value: string;
   placeholder?: string;
   onChange: (isoDate: string) => void;
@@ -40,13 +44,23 @@ function parseISODate(value: string): Date | undefined {
 function parseDisplayDate(value: string): Date | undefined {
   if (!value) return undefined;
   const date = parse(value, DISPLAY_FORMAT, new Date());
-  return isValid(date) ? date : undefined;
+  if (!isValid(date)) return undefined;
+  // Reject lenient parses ("1.1.1" → year 1) by requiring the input to round-trip.
+  if (format(date, DISPLAY_FORMAT) !== value) return undefined;
+  return date;
+}
+
+function formatISOForDisplay(value: string): string {
+  const parsed = parseISODate(value);
+  return parsed ? format(parsed, DISPLAY_FORMAT) : "";
 }
 
 export function DatePicker(props: DatePickerProps) {
   const {
     label,
     id: providedId,
+    name,
+    className,
     placeholder = "dd.mm.yyyy",
     value,
     onChange,
@@ -55,7 +69,7 @@ export function DatePicker(props: DatePickerProps) {
     errorMessage,
   } = props;
   const [open, setOpen] = useState(false);
-  const [inputValue, setInputValue] = useState(() => formatDate(value));
+  const [inputValue, setInputValue] = useState(() => formatISOForDisplay(value));
   const [month, setMonth] = useState<Date | undefined>(() => parseISODate(value));
 
   const generatedId = useId();
@@ -66,8 +80,14 @@ export function DatePicker(props: DatePickerProps) {
   const renderDescription = !!helpText || hasError;
 
   useEffect(() => {
-    setInputValue(formatDate(value));
     const parsed = parseISODate(value);
+    setInputValue((current) => {
+      const currentParsed = parseDisplayDate(current);
+      const currentISO = currentParsed ? toISODate(currentParsed) : "";
+      // Preserve in-progress user input that already represents `value`.
+      if (currentISO === value) return current;
+      return parsed ? format(parsed, DISPLAY_FORMAT) : "";
+    });
     if (parsed) setMonth(parsed);
   }, [value]);
 
@@ -81,22 +101,26 @@ export function DatePicker(props: DatePickerProps) {
     if (parsed) {
       setMonth(parsed);
       onChange(toISODate(parsed));
+    } else if (value) {
+      // Invalidate the form value so validation reflects the bad input.
+      onChange("");
     }
   };
 
   const handleBlur = () => {
     if (inputValue && !parseDisplayDate(inputValue)) {
-      setInputValue(formatDate(value));
+      setInputValue(formatISOForDisplay(value));
     }
     onBlur?.();
   };
 
   return (
-    <Field className="w-44" data-component="DatePicker">
+    <Field className={cn("w-44", className)} data-component="DatePicker">
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
       <InputGroup>
         <InputGroupInput
           id={id}
+          name={name}
           value={inputValue}
           placeholder={placeholder}
           onChange={(e) => handleInputChange(e.target.value)}
@@ -128,8 +152,8 @@ export function DatePicker(props: DatePickerProps) {
               <Calendar
                 mode="single"
                 captionLayout="dropdown"
-                startMonth={new Date(1900, 0)}
-                endMonth={new Date(new Date().getFullYear() + 5, 11)}
+                startMonth={CALENDAR_START_MONTH}
+                endMonth={CALENDAR_END_MONTH}
                 selected={selectedDate}
                 month={month}
                 onMonthChange={setMonth}

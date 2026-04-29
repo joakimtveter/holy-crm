@@ -2,14 +2,14 @@ import { queryOptions } from "@tanstack/react-query";
 
 import type { EventBrief } from "#/domains/events/events.types.ts";
 import type { Member } from "#/domains/members/member.types.ts";
-import { EVENTS, SINGLE_EVENT } from "#/shared/constants/query-keys.ts";
+import { ALL_EVENTS, SINGLE_EVENT } from "#/shared/constants/query-keys.ts";
 import type { Pagination } from "#/shared/types/api.types.ts";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export function useEventsQueryOptions(pagination?: Pagination) {
   return queryOptions({
-    queryKey: [EVENTS, pagination],
+    queryKey: [ALL_EVENTS, pagination],
     queryFn: () => getEvents(pagination),
   });
 }

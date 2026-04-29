@@ -5,7 +5,13 @@
     "correctness": "error"
   },
   "rules": {
-    "eslint/no-unused-vars": "error"
+    "eslint/no-unused-vars": "error",
+    "react/no-children-prop": [
+      "error",
+      {
+        "allowFunctions": true
+      }
+    ]
   },
   "env": {
     "builtin": true
