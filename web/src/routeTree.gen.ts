@@ -11,13 +11,18 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as MembersIndexRouteImport } from './routes/members/index'
-import { Route as EventsIndexRouteImport } from './routes/events/index'
-import { Route as MembersAddRouteImport } from './routes/members/add'
-import { Route as EventsAddRouteImport } from './routes/events/add'
-import { Route as EventsEventIdRouteImport } from './routes/events/$eventId'
-import { Route as MembersMemberIdIndexRouteImport } from './routes/members/$memberId/index'
-import { Route as MembersMemberIdEditRouteImport } from './routes/members/$memberId/edit'
+import { Route as VenuesIndexRouteImport } from './routes/venues.index'
+import { Route as MembersIndexRouteImport } from './routes/members.index'
+import { Route as EventsIndexRouteImport } from './routes/events.index'
+import { Route as VenuesAddRouteImport } from './routes/venues.add'
+import { Route as MembersAddRouteImport } from './routes/members.add'
+import { Route as EventsAddRouteImport } from './routes/events.add'
+import { Route as VenuesVenueIdIndexRouteImport } from './routes/venues.$venueId.index'
+import { Route as MembersMemberIdIndexRouteImport } from './routes/members.$memberId.index'
+import { Route as EventsEventIdIndexRouteImport } from './routes/events.$eventId.index'
+import { Route as VenuesVenueIdEditRouteImport } from './routes/venues.$venueId.edit'
+import { Route as MembersMemberIdEditRouteImport } from './routes/members.$memberId.edit'
+import { Route as EventsEventIdEditRouteImport } from './routes/events.eventId.edit'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -27,6 +32,11 @@ const AboutRoute = AboutRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VenuesIndexRoute = VenuesIndexRouteImport.update({
+  id: '/venues/',
+  path: '/venues/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MembersIndexRoute = MembersIndexRouteImport.update({
@@ -39,6 +49,11 @@ const EventsIndexRoute = EventsIndexRouteImport.update({
   path: '/events/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VenuesAddRoute = VenuesAddRouteImport.update({
+  id: '/venues/add',
+  path: '/venues/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MembersAddRoute = MembersAddRouteImport.update({
   id: '/members/add',
   path: '/members/add',
@@ -49,9 +64,9 @@ const EventsAddRoute = EventsAddRouteImport.update({
   path: '/events/add',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EventsEventIdRoute = EventsEventIdRouteImport.update({
-  id: '/events/$eventId',
-  path: '/events/$eventId',
+const VenuesVenueIdIndexRoute = VenuesVenueIdIndexRouteImport.update({
+  id: '/venues/$venueId/',
+  path: '/venues/$venueId/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MembersMemberIdIndexRoute = MembersMemberIdIndexRouteImport.update({
@@ -59,92 +74,142 @@ const MembersMemberIdIndexRoute = MembersMemberIdIndexRouteImport.update({
   path: '/members/$memberId/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EventsEventIdIndexRoute = EventsEventIdIndexRouteImport.update({
+  id: '/events/$eventId/',
+  path: '/events/$eventId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VenuesVenueIdEditRoute = VenuesVenueIdEditRouteImport.update({
+  id: '/venues/$venueId/edit',
+  path: '/venues/$venueId/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MembersMemberIdEditRoute = MembersMemberIdEditRouteImport.update({
   id: '/members/$memberId/edit',
   path: '/members/$memberId/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsEventIdEditRoute = EventsEventIdEditRouteImport.update({
+  id: '/events/eventId/edit',
+  path: '/events/eventId/edit',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/events/$eventId': typeof EventsEventIdRoute
   '/events/add': typeof EventsAddRoute
   '/members/add': typeof MembersAddRoute
+  '/venues/add': typeof VenuesAddRoute
   '/events/': typeof EventsIndexRoute
   '/members/': typeof MembersIndexRoute
+  '/venues/': typeof VenuesIndexRoute
+  '/events/eventId/edit': typeof EventsEventIdEditRoute
   '/members/$memberId/edit': typeof MembersMemberIdEditRoute
+  '/venues/$venueId/edit': typeof VenuesVenueIdEditRoute
+  '/events/$eventId/': typeof EventsEventIdIndexRoute
   '/members/$memberId/': typeof MembersMemberIdIndexRoute
+  '/venues/$venueId/': typeof VenuesVenueIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/events/$eventId': typeof EventsEventIdRoute
   '/events/add': typeof EventsAddRoute
   '/members/add': typeof MembersAddRoute
+  '/venues/add': typeof VenuesAddRoute
   '/events': typeof EventsIndexRoute
   '/members': typeof MembersIndexRoute
+  '/venues': typeof VenuesIndexRoute
+  '/events/eventId/edit': typeof EventsEventIdEditRoute
   '/members/$memberId/edit': typeof MembersMemberIdEditRoute
+  '/venues/$venueId/edit': typeof VenuesVenueIdEditRoute
+  '/events/$eventId': typeof EventsEventIdIndexRoute
   '/members/$memberId': typeof MembersMemberIdIndexRoute
+  '/venues/$venueId': typeof VenuesVenueIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/events/$eventId': typeof EventsEventIdRoute
   '/events/add': typeof EventsAddRoute
   '/members/add': typeof MembersAddRoute
+  '/venues/add': typeof VenuesAddRoute
   '/events/': typeof EventsIndexRoute
   '/members/': typeof MembersIndexRoute
+  '/venues/': typeof VenuesIndexRoute
+  '/events/eventId/edit': typeof EventsEventIdEditRoute
   '/members/$memberId/edit': typeof MembersMemberIdEditRoute
+  '/venues/$venueId/edit': typeof VenuesVenueIdEditRoute
+  '/events/$eventId/': typeof EventsEventIdIndexRoute
   '/members/$memberId/': typeof MembersMemberIdIndexRoute
+  '/venues/$venueId/': typeof VenuesVenueIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
-    | '/events/$eventId'
     | '/events/add'
     | '/members/add'
+    | '/venues/add'
     | '/events/'
     | '/members/'
+    | '/venues/'
+    | '/events/eventId/edit'
     | '/members/$memberId/edit'
+    | '/venues/$venueId/edit'
+    | '/events/$eventId/'
     | '/members/$memberId/'
+    | '/venues/$venueId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/events/$eventId'
     | '/events/add'
     | '/members/add'
+    | '/venues/add'
     | '/events'
     | '/members'
+    | '/venues'
+    | '/events/eventId/edit'
     | '/members/$memberId/edit'
+    | '/venues/$venueId/edit'
+    | '/events/$eventId'
     | '/members/$memberId'
+    | '/venues/$venueId'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/events/$eventId'
     | '/events/add'
     | '/members/add'
+    | '/venues/add'
     | '/events/'
     | '/members/'
+    | '/venues/'
+    | '/events/eventId/edit'
     | '/members/$memberId/edit'
+    | '/venues/$venueId/edit'
+    | '/events/$eventId/'
     | '/members/$memberId/'
+    | '/venues/$venueId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  EventsEventIdRoute: typeof EventsEventIdRoute
   EventsAddRoute: typeof EventsAddRoute
   MembersAddRoute: typeof MembersAddRoute
+  VenuesAddRoute: typeof VenuesAddRoute
   EventsIndexRoute: typeof EventsIndexRoute
   MembersIndexRoute: typeof MembersIndexRoute
+  VenuesIndexRoute: typeof VenuesIndexRoute
+  EventsEventIdEditRoute: typeof EventsEventIdEditRoute
   MembersMemberIdEditRoute: typeof MembersMemberIdEditRoute
+  VenuesVenueIdEditRoute: typeof VenuesVenueIdEditRoute
+  EventsEventIdIndexRoute: typeof EventsEventIdIndexRoute
   MembersMemberIdIndexRoute: typeof MembersMemberIdIndexRoute
+  VenuesVenueIdIndexRoute: typeof VenuesVenueIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -163,6 +228,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/venues/': {
+      id: '/venues/'
+      path: '/venues'
+      fullPath: '/venues/'
+      preLoaderRoute: typeof VenuesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/members/': {
       id: '/members/'
       path: '/members'
@@ -175,6 +247,13 @@ declare module '@tanstack/react-router' {
       path: '/events'
       fullPath: '/events/'
       preLoaderRoute: typeof EventsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/venues/add': {
+      id: '/venues/add'
+      path: '/venues/add'
+      fullPath: '/venues/add'
+      preLoaderRoute: typeof VenuesAddRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/members/add': {
@@ -191,11 +270,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsAddRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/events/$eventId': {
-      id: '/events/$eventId'
-      path: '/events/$eventId'
-      fullPath: '/events/$eventId'
-      preLoaderRoute: typeof EventsEventIdRouteImport
+    '/venues/$venueId/': {
+      id: '/venues/$venueId/'
+      path: '/venues/$venueId'
+      fullPath: '/venues/$venueId/'
+      preLoaderRoute: typeof VenuesVenueIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/members/$memberId/': {
@@ -205,11 +284,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MembersMemberIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/events/$eventId/': {
+      id: '/events/$eventId/'
+      path: '/events/$eventId'
+      fullPath: '/events/$eventId/'
+      preLoaderRoute: typeof EventsEventIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/venues/$venueId/edit': {
+      id: '/venues/$venueId/edit'
+      path: '/venues/$venueId/edit'
+      fullPath: '/venues/$venueId/edit'
+      preLoaderRoute: typeof VenuesVenueIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/members/$memberId/edit': {
       id: '/members/$memberId/edit'
       path: '/members/$memberId/edit'
       fullPath: '/members/$memberId/edit'
       preLoaderRoute: typeof MembersMemberIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events/eventId/edit': {
+      id: '/events/eventId/edit'
+      path: '/events/eventId/edit'
+      fullPath: '/events/eventId/edit'
+      preLoaderRoute: typeof EventsEventIdEditRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -218,13 +318,18 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  EventsEventIdRoute: EventsEventIdRoute,
   EventsAddRoute: EventsAddRoute,
   MembersAddRoute: MembersAddRoute,
+  VenuesAddRoute: VenuesAddRoute,
   EventsIndexRoute: EventsIndexRoute,
   MembersIndexRoute: MembersIndexRoute,
+  VenuesIndexRoute: VenuesIndexRoute,
+  EventsEventIdEditRoute: EventsEventIdEditRoute,
   MembersMemberIdEditRoute: MembersMemberIdEditRoute,
+  VenuesVenueIdEditRoute: VenuesVenueIdEditRoute,
+  EventsEventIdIndexRoute: EventsEventIdIndexRoute,
   MembersMemberIdIndexRoute: MembersMemberIdIndexRoute,
+  VenuesVenueIdIndexRoute: VenuesVenueIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

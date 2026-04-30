@@ -51,7 +51,7 @@ async function getMemberById(memberId: string): Promise<Member> {
       Accept: "application/json",
     },
   });
-  if (!response.ok) throw new Error(`Failed to fetch with id: ${memberId}`);
+  if (!response.ok) throw new Error(`Failed to fetch member with id: ${memberId}`);
 
   return response.json();
 }

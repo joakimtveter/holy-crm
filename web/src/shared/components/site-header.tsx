@@ -9,6 +9,7 @@ export default function SiteHeader() {
         <Link to="/">Home</Link>
         <Link to="/members">Members</Link>
         <Link to="/events">Events</Link>
+        <Link to="/venues">Venues</Link>
       </nav>
       <ThemeSwitcher />
     </header>
