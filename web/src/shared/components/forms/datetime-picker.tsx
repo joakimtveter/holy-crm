@@ -14,6 +14,7 @@ import {
 } from "#/shared/components/ui/field";
 import { Input } from "#/shared/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "#/shared/components/ui/popover";
+import { DATE_FORMAT } from "#/shared/constants/constants.ts";
 import { useFieldContext } from "#/shared/hooks/form-context.tsx";
 
 type DatePickerTimeProps = {
@@ -33,7 +34,7 @@ function parseFieldValue(value: string): { date: Date | undefined; time: string 
 
 function combineDateTime(date: Date | undefined, time: string): string {
   if (!date) return "";
-  return `${format(date, "yyyy-MM-dd")}T${time || "00:00"}`;
+  return `${format(date, DATE_FORMAT)}T${time || "00:00"}`;
 }
 
 export function DatetimePicker(props: DatePickerTimeProps) {

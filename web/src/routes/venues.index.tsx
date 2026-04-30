@@ -14,22 +14,6 @@ import PageWrapper from "#/shared/components/page-wrapper.tsx";
 import { IconLinkButton } from "#/shared/components/ui/icon-link-button.tsx";
 import { LinkButton } from "#/shared/components/ui/link-button.tsx";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "#/shared/components/ui/pagination";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "#/shared/components/ui/select";
-import {
   Table,
   TableBody,
   TableCell,
@@ -37,7 +21,8 @@ import {
   TableHeader,
   TableRow,
 } from "#/shared/components/ui/table";
-import { SITE_TITLE } from "#/shared/constants/strings.constants.ts";
+import { TablePagination } from "#/shared/components/ui/table-pagination";
+import { SITE_TITLE } from "#/shared/constants/constants.ts";
 import ErrorPage from "#/shared/pages/error-page.tsx";
 import LoadingPage from "#/shared/pages/loading-page.tsx";
 
@@ -96,23 +81,6 @@ const columns = [
   }),
 ];
 
-function buildPageNumbers(currentPage: number, totalPages: number): Array<number | "ellipsis"> {
-  if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
-
-  const pages: Array<number | "ellipsis"> = [1];
-
-  if (currentPage > 3) pages.push("ellipsis");
-
-  for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-    pages.push(i);
-  }
-
-  if (currentPage < totalPages - 2) pages.push("ellipsis");
-
-  pages.push(totalPages);
-  return pages;
-}
-
 function VenuePage() {
   const { page, pageSize } = Route.useSearch();
   const navigate = Route.useNavigate();
@@ -129,8 +97,6 @@ function VenuePage() {
     navigate({ search: (prev) => ({ ...prev, page: 1, pageSize: size }) });
 
   if (data) {
-    const pageNumbers = buildPageNumbers(data.currentPage, data.totalPages);
-
     return (
       <PageWrapper title="Venues" actions={<LinkButton to="/venues/add">Add a venue</LinkButton>}>
         <Table>
@@ -169,59 +135,15 @@ function VenuePage() {
           </TableBody>
         </Table>
 
-        <div className="mt-4 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">Rows per page</span>
-            <Select value={pageSize} onValueChange={(value) => changePageSize(Number(value))}>
-              <SelectTrigger size="sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {[10, 20, 50, 100].map((size) => (
-                  <SelectItem key={size} value={size}>
-                    {size}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {data.totalPages > 1 && (
-            <Pagination className="mx-0 w-auto">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    aria-disabled={!data.hasPrevious}
-                    className={!data.hasPrevious ? "pointer-events-none opacity-50" : undefined}
-                    onClick={() => goToPage(data.currentPage - 1)}
-                  />
-                </PaginationItem>
-
-                {pageNumbers.map((p, i) =>
-                  p === "ellipsis" ? (
-                    <PaginationItem key={`ellipsis-${i}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  ) : (
-                    <PaginationItem key={p}>
-                      <PaginationLink isActive={p === data.currentPage} onClick={() => goToPage(p)}>
-                        {p}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ),
-                )}
-
-                <PaginationItem>
-                  <PaginationNext
-                    aria-disabled={!data.hasNext}
-                    className={!data.hasNext ? "pointer-events-none opacity-50" : undefined}
-                    onClick={() => goToPage(data.currentPage + 1)}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          )}
-        </div>
+        <TablePagination
+          currentPage={data.currentPage}
+          totalPages={data.totalPages}
+          pageSize={pageSize}
+          hasPrevious={data.hasPrevious}
+          hasNext={data.hasNext}
+          onPageChange={goToPage}
+          onPageSizeChange={changePageSize}
+        />
       </PageWrapper>
     );
   }

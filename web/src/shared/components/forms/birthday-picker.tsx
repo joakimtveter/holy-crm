@@ -16,9 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "#/shared/components/ui/select.tsx";
+import { DATE_FORMAT } from "#/shared/constants/constants.ts";
 import { cn } from "#/shared/lib/utils.ts";
 
-const ISO_FORMAT = "yyyy-MM-dd";
 const MIN_YEAR = 1900;
 
 const MONTHS = Array.from({ length: 12 }, (_, i) => ({
@@ -45,7 +45,7 @@ type Parts = {
 
 function parseISODate(value: string): Date | undefined {
   if (!value) return undefined;
-  const date = parse(value, ISO_FORMAT, new Date());
+  const date = parse(value, DATE_FORMAT, new Date());
   return isValid(date) ? date : undefined;
 }
 
@@ -72,7 +72,7 @@ function isoFromParts(parts: Parts): string {
   const date = new Date(y, m - 1, d);
   // Reject invalid combinations like Feb 30 by requiring the date to round-trip.
   if (date.getFullYear() !== y || date.getMonth() !== m - 1 || date.getDate() !== d) return "";
-  return format(date, ISO_FORMAT);
+  return format(date, DATE_FORMAT);
 }
 
 export default function BirthdayPicker(props: BirthdayPickerProps) {

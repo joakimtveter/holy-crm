@@ -11,10 +11,9 @@ import {
   InputGroupInput,
 } from "#/shared/components/ui/input-group.tsx";
 import { Popover, PopoverContent, PopoverTrigger } from "#/shared/components/ui/popover.tsx";
+import { DATE_DISPLAY_FORMAT, DATE_FORMAT } from "#/shared/constants/constants.ts";
 import { cn } from "#/shared/lib/utils.ts";
 
-const ISO_FORMAT = "yyyy-MM-dd";
-const DISPLAY_FORMAT = "dd.MM.yyyy";
 const CALENDAR_START_MONTH = new Date(1900, 0);
 const CALENDAR_END_MONTH = new Date();
 
@@ -32,27 +31,27 @@ type DatePickerProps = {
 };
 
 function toISODate(date: Date): string {
-  return format(date, ISO_FORMAT);
+  return format(date, DATE_FORMAT);
 }
 
 function parseISODate(value: string): Date | undefined {
   if (!value) return undefined;
-  const date = parse(value, ISO_FORMAT, new Date());
+  const date = parse(value, DATE_FORMAT, new Date());
   return isValid(date) ? date : undefined;
 }
 
 function parseDisplayDate(value: string): Date | undefined {
   if (!value) return undefined;
-  const date = parse(value, DISPLAY_FORMAT, new Date());
+  const date = parse(value, DATE_DISPLAY_FORMAT, new Date());
   if (!isValid(date)) return undefined;
   // Reject lenient parses ("1.1.1" → year 1) by requiring the input to round-trip.
-  if (format(date, DISPLAY_FORMAT) !== value) return undefined;
+  if (format(date, DATE_DISPLAY_FORMAT) !== value) return undefined;
   return date;
 }
 
 function formatISOForDisplay(value: string): string {
   const parsed = parseISODate(value);
-  return parsed ? format(parsed, DISPLAY_FORMAT) : "";
+  return parsed ? format(parsed, DATE_DISPLAY_FORMAT) : "";
 }
 
 export function DatePicker(props: DatePickerProps) {
@@ -86,7 +85,7 @@ export function DatePicker(props: DatePickerProps) {
       const currentISO = currentParsed ? toISODate(currentParsed) : "";
       // Preserve in-progress user input that already represents `value`.
       if (currentISO === value) return current;
-      return parsed ? format(parsed, DISPLAY_FORMAT) : "";
+      return parsed ? format(parsed, DATE_DISPLAY_FORMAT) : "";
     });
     if (parsed) setMonth(parsed);
   }, [value]);
@@ -161,7 +160,7 @@ export function DatePicker(props: DatePickerProps) {
                   if (date) {
                     const iso = toISODate(date);
                     onChange(iso);
-                    setInputValue(format(date, DISPLAY_FORMAT));
+                    setInputValue(format(date, DATE_DISPLAY_FORMAT));
                     setMonth(date);
                   }
                   setOpen(false);

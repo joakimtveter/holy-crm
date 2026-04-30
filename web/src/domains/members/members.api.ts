@@ -2,10 +2,9 @@ import { queryOptions } from "@tanstack/react-query";
 
 import type { Member, MemberBrief } from "#/domains/members/member.types.ts";
 import type { MemberPayload } from "#/domains/members/members.schema.ts";
+import { BASE_URL } from "#/shared/constants/constants.ts";
 import { ALL_MEMBERS, SINGLE_MEMBER } from "#/shared/constants/query-keys.ts";
 import type { PaginatedList, Pagination } from "#/shared/types/api.types.ts";
-
-const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export function useMembersQueryOptions(pagination?: Pagination) {
   return queryOptions({
