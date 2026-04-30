@@ -4,6 +4,7 @@ import type { EventBrief } from "#/domains/events/events.types.ts";
 import type { Member } from "#/domains/members/member.types.ts";
 import { BASE_URL } from "#/shared/constants/constants.ts";
 import { ALL_EVENTS, SINGLE_EVENT } from "#/shared/constants/query-keys.ts";
+import { BASE_URL } from "#/shared/constants/strings.constants.ts";
 import type { Pagination } from "#/shared/types/api.types.ts";
 
 export function useEventsQueryOptions(pagination?: Pagination) {

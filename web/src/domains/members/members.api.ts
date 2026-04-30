@@ -4,6 +4,7 @@ import type { Member, MemberBrief } from "#/domains/members/member.types.ts";
 import type { MemberPayload } from "#/domains/members/members.schema.ts";
 import { BASE_URL } from "#/shared/constants/constants.ts";
 import { ALL_MEMBERS, SINGLE_MEMBER } from "#/shared/constants/query-keys.ts";
+import { BASE_URL } from "#/shared/constants/strings.constants.ts";
 import type { PaginatedList, Pagination } from "#/shared/types/api.types.ts";
 
 export function useMembersQueryOptions(pagination?: Pagination) {
