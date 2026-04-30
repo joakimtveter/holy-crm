@@ -2,9 +2,14 @@ import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/r
 import { toast } from "sonner";
 
 import type { VenuePayload } from "#/domains/venues/venue.schema.ts";
-import { createVenue, getVenueById, getVenues, updateVenue } from "#/domains/venues/venues.api.ts";
+import type { Venue, VenueBrief } from "#/domains/venues/venue.types.ts";
 import { ALL_VENUES, SINGLE_VENUE } from "#/shared/constants/query-keys.ts";
-import type { Pagination } from "#/shared/types/api.types.ts";
+import { apiFetch } from "#/shared/lib/fetch/api-fetch.ts";
+import type { PaginatedList, Pagination, QueryOptions } from "#/shared/types/api.types.ts";
+
+async function getVenues(pagination?: Pagination) {
+  return await apiFetch<PaginatedList<VenueBrief>>("/venues", { query: pagination });
+}
 
 export function useVenuesQueryOptions(pagination?: Pagination) {
   return queryOptions({
@@ -13,16 +18,15 @@ export function useVenuesQueryOptions(pagination?: Pagination) {
   });
 }
 
-type VenuesQueryOptions = ReturnType<typeof useVenuesQueryOptions>;
-
-export function useVenues(
-  pagination?: Pagination,
-  options?: Omit<VenuesQueryOptions, "queryKey" | "queryFn">,
-) {
+export function useVenues(pagination?: Pagination, options?: QueryOptions) {
   return useQuery({ ...useVenuesQueryOptions(pagination), ...options });
 }
 
-export function useMemberByIdQueryOptions(venueId: string) {
+async function getVenueById(venueId: string) {
+  return await apiFetch<Venue>(`/venues/${venueId}`);
+}
+
+export function useVenueByIdQueryOptions(venueId: string) {
   return queryOptions({
     queryKey: [SINGLE_VENUE, { venueId }],
     queryFn: () => getVenueById(venueId),
@@ -30,7 +34,11 @@ export function useMemberByIdQueryOptions(venueId: string) {
 }
 
 export function useVenueById(venueId: string) {
-  return useQuery(useMemberByIdQueryOptions(venueId));
+  return useQuery(useVenueByIdQueryOptions(venueId));
+}
+
+async function createVenue(payload: VenuePayload) {
+  return await apiFetch<Venue>("/venues", { method: "POST", body: payload });
 }
 
 export function useCreateVenue() {
@@ -46,6 +54,10 @@ export function useCreateVenue() {
   });
 }
 
+async function updateVenue(venueId: string, payload: VenuePayload) {
+  return await apiFetch(`/venues/${venueId}`, { method: "PUT", body: payload });
+}
+
 export function useUpdateVenue(venueId: string) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -58,6 +70,30 @@ export function useUpdateVenue(venueId: string) {
       queryClient.invalidateQueries({
         queryKey: [SINGLE_VENUE, { venueId }],
       });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
+async function deleteVenue(venueId: string) {
+  return await apiFetch(`/venues/${venueId}`, { method: "DELETE" });
+}
+
+export function useDeleteVenue(venueId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["delete-venue", { venueId }],
+    mutationFn: () => deleteVenue(venueId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [ALL_VENUES],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [SINGLE_VENUE, { venueId }],
+      });
+      toast.success("Venue deleted");
     },
     onError: (error) => {
       toast.error(error.message);
